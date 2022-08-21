@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         age: {
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.INTEGER(100),
             allowNull: true
         },
         weigth: {
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         history: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(1000),
             allowNull: true
         },
         movies_id: {
@@ -40,5 +40,13 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     const Character = sequelize.define(alias, cols, config)
+    
+    Character.associate = (models) => {
+        Character.belongsTo(models.Movie, {
+            as: "movies",
+            foreignKey: "movies_id"
+        })
+    }
+    
     return Character;
 }

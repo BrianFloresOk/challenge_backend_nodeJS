@@ -20,8 +20,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER(11),
             allowNull: true
         },
-        characters_id: {
+        genre_id: {
             type: DataTypes.INTEGER(11),
+            allowNull: false
+        },
+        image: {
+            type: DataTypes.STRING(1000),
             allowNull: true
         }
     }
@@ -29,9 +33,24 @@ module.exports = (sequelize, DataTypes) => {
     const config = {
         tableName: "movies",
         timestamps: true,
-        created_at: "created_at"
+        createdAt: "created_at",
+        updatedAt: false
     }
 
     const Movie = sequelize.define(alias, cols, config)
+
+    Movie.associate = (models) => {
+        Movie.belongsTo(models.Genre, {
+            as: "genre",
+            foreignKey: "genre_id"
+        })
+
+        Movie.hasMany(models.Character, {
+            as: "characters",
+            foreignKey: "movies_id"
+        })
+    }
+
+
     return Movie;
 }
