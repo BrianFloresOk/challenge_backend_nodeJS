@@ -1,4 +1,4 @@
-const { Movie } = require('../database/models')
+const { Movie, CharacterMovie, Character } = require('../database/models')
 
 module.exports = {
     list: async (req, res) => {
@@ -38,7 +38,16 @@ module.exports = {
         try {
             let movieId = +req.params.id
             let movie = await Movie.findByPk(movieId, {
-                include: [ "characters" ]
+                include: [
+                    {association: "characters"},
+                    {association: "movies"}
+                ]
+            })
+            let characters = await Character.findAll()
+            let charactersMovie = await CharacterMovie.findAll({
+                where: {
+                    movie_id: movieId
+                },
             })
             if(movie) {
                 res.status(200).json({
@@ -48,10 +57,23 @@ module.exports = {
                         url: "api/movies/detail/" + movieId
                     },
                     data: {
-                        movie
+                        movie,
+                        characters: charactersMovie 
                     }
                 })
             }
+/*             let moviesId = req.params.id
+            let characters = await CharacterMovie.findAll({
+                where: {
+                    movie_id: moviesId
+                },
+                include: ["characters", "movies"]
+            })
+            res.json({
+                data: {
+                    characters 
+                }
+            }) */
         } catch (error) {
             res.json(error)
         }
