@@ -5,11 +5,14 @@ module.exports = {
         try {
             let movies = await Movie.findAll()
             if(movies) {
-                let allMovies = {}
+                let allMovies = []
                 movies.forEach(movie => {
-                  allMovies.title = movie.title,
-                  allMovies.image = movie.image,
-                  allMovies.createdAt = movie.created_at  
+                    let resumeMovie = {
+                        title: movie.title,
+                        image: movie.image,
+                        createdAt: movie.created_at
+                    }
+                    allMovies.push(resumeMovie)
                 })
                 res.status(200).json({
                     meta: {
@@ -38,16 +41,7 @@ module.exports = {
         try {
             let movieId = +req.params.id
             let movie = await Movie.findByPk(movieId, {
-                include: [
-                    {association: "characters"},
-                    {association: "movies"}
-                ]
-            })
-            let characters = await Character.findAll()
-            let charactersMovie = await CharacterMovie.findAll({
-                where: {
-                    movie_id: movieId
-                },
+                include: ["characters"]
             })
             if(movie) {
                 res.status(200).json({
@@ -58,22 +52,10 @@ module.exports = {
                     },
                     data: {
                         movie,
-                        characters: charactersMovie 
+                        characters: movie.characters.name 
                     }
                 })
             }
-/*             let moviesId = req.params.id
-            let characters = await CharacterMovie.findAll({
-                where: {
-                    movie_id: moviesId
-                },
-                include: ["characters", "movies"]
-            })
-            res.json({
-                data: {
-                    characters 
-                }
-            }) */
         } catch (error) {
             res.json(error)
         }

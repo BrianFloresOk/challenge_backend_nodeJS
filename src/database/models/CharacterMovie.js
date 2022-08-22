@@ -25,5 +25,17 @@ module.exports = (sequelize, DataTypes) => {
 
     const CharacterMovie = sequelize.define(alias, cols, config)
 
+/*     CharacterMovie.associate = (models) => {
+        CharacterMovie.hasMany(models.Character, {
+            as: "characters",
+            foreignKey: "characer_id"
+        })
+
+        CharacterMovie.hasMany(models.Movie, {
+            as: "movies",
+            foreignKey: "movie_id"
+        })
+    } */
+
     return CharacterMovie;
 }
